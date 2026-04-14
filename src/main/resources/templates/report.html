@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика приложения</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-family: sans-serif; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .metrics-row { background-color: #f9f9f9; font-style: italic; color: #555; }
+        h2, h3 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<h2>Отчет по статистике приложения</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Параметр</th>
+        <th>Значение</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Количество зарегистрированных пользователей</td>
+        <td th:text="${userCount}">0</td>
+    </tr>
+    <tr class="metrics-row">
+        <td>Время вычисления количества пользователей (мс)</td>
+        <td th:text="${userCountDuration}">0</td>
+    </tr>
+    <tr class="metrics-row">
+        <td>Время получения списка пользователей (мс)</td>
+        <td th:text="${userListDuration}">0</td>
+    </tr>
+    <tr style="font-weight: bold; background-color: #e9ecef;">
+        <td>Время формирования отчета (мс)</td>
+        <td th:text="${totalTime}">0</td>
+    </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+    <tr>
+        <th>Список пользователей</th>
+    </tr>
+    <tr>
+        <th>Имя пользователя (Username)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${userList}">
+        <td th:text="${user.username}">Имя</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(userList)}">
+        <td style="text-align: center;">Пользователи не найдены</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
