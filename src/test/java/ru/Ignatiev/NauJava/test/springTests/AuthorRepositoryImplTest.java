@@ -1,4 +1,4 @@
-package ru.Ignatiev.NauJava.test;
+package ru.Ignatiev.NauJava.test.springTests;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
