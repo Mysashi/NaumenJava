@@ -21,14 +21,28 @@ public class CustomRequestsRestControllerTest {
     }
 
     @Test
-    void shouldReturn404WhenAuthorsNotFound() {
+    void shouldReturn200WhenAuthorsNotFoundAndUserUnauthorized() {
         given()
-                .log().all()
                 .param("name", "John")
                 .param("surname", "Doe")
                 .when()
-                .post("/api/custom/findByNameAndSurname")
+                .get("/api/custom/findByNameAndSurname")
                 .then()
+                .statusCode(200);
+    }
+
+    @Test
+    void shouldReturn404WhenAuthorsNotFoundAndUserAuthorized() {
+        given()
+                .auth()
+                .form("admin", "admin")
+                .when()
+                .param("name", "Alex")
+                .param("surname", "Summer")
+                .when()
+                .get("/api/custom/findByNameAndSurname")
+                .then()
+                .log().all()
                 .statusCode(404);
     }
 }

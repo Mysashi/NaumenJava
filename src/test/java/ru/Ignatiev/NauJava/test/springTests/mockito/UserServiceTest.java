@@ -44,7 +44,6 @@ public class UserServiceTest {
 
     @Test
     void shouldRegisterUserDuplicateThrowsException() {
-        // Given
         String username = "existingUser";
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity()));
 

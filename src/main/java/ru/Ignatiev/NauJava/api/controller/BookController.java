@@ -18,7 +18,7 @@ public class BookController {
     }
 
     @GetMapping("/list")
-    private String listAllBooks(Model model) {
+    public String listAllBooks(Model model) {
         Iterable<BookEntity> books = bookRepository.findAll();
         model.addAttribute("books", books);
         return "index";
