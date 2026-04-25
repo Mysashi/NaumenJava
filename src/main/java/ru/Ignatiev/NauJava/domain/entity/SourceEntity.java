@@ -25,11 +25,10 @@ public class SourceEntity {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "books")
     @ManyToMany
     @JoinTable(name = "book_sources",
-            joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "source_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "source_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id")
     )
     private Set<BookEntity> books;
 
