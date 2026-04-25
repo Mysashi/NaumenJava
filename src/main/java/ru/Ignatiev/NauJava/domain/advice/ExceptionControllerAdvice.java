@@ -14,4 +14,14 @@ public class ExceptionControllerAdvice
     {
         return CustomException.create("Resource not found! Error message=" + e.getMessage());
     }
+
+    @ExceptionHandler(java.lang.Exception.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CustomException exception(java.lang.Exception e)
+    {
+        return CustomException.create("Exception was thrown! Error message=" + e.getMessage());
+    }
+
+
 }

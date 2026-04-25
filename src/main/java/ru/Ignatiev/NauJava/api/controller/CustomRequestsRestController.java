@@ -1,5 +1,7 @@
 package ru.Ignatiev.NauJava.api.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/custom")
 public class CustomRequestsRestController {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomRequestsRestController.class);
     private BookRepositoryCustom bookRepositoryCustom;
     private AuthorRepositoryCustom authorRepositoryCustom;
 
@@ -28,6 +31,7 @@ public class CustomRequestsRestController {
     private List<AuthorEntity> findAuthorsByNameAndSurname(@RequestParam String name, @RequestParam String surname) {
         var found = authorRepositoryCustom.findByNameAndSurnameAllIgnoreCase(name, surname);
         if (found.isEmpty()) throw new ResourceNotFoundException();
+        log.info("List of book by name and surname was found! size of List={}", found.size());
         return found;
     }
 
@@ -36,6 +40,7 @@ public class CustomRequestsRestController {
     private List<BookEntity> findBookByYearRange(@RequestParam int minYear, @RequestParam int maxYear) {
         var found = bookRepositoryCustom.findBooksByYearRange(minYear, maxYear);
         if (found.isEmpty()) throw new ResourceNotFoundException();
+        log.info("List of book by range of year was found! size of List={}", found.size());
         return found;
     }
 }

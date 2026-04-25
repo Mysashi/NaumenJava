@@ -10,9 +10,9 @@
         <th>Name</th>
         <th>Author</th>
     </tr>
-    <tr th:each="books : ${books}">
-        <td th:text="${books.name}"></td>
-        <td th:text="${books.author}"></td>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.name}"></td>
+        <td th:text="${book.author}"></td>
     </tr>
 </table>
 </body>
