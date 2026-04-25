@@ -1,4 +1,4 @@
-package ru.Ignatiev.NauJava.domain.controller;
+package ru.Ignatiev.NauJava.api.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
