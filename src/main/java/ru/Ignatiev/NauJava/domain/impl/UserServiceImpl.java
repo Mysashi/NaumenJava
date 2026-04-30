@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity registerUser(String username, String password) {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
         if (userRepository.findByUsername(username).isPresent()) throw new RuntimeException("User Duplicate found");
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);

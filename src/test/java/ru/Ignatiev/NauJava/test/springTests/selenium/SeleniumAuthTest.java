@@ -31,8 +31,8 @@ public class SeleniumAuthTest {
         String baseUrl = "http://localhost:" + port;
 
         driver.get(baseUrl + "/login");
-        var usernameField = By.id("username");
-        var passwordField = By.id("password");
+        var usernameField = By.name("username");
+        var passwordField = By.name("password");
         var loginButton = By.cssSelector("button[type='submit']");
 
         driver.findElement(usernameField).sendKeys("admin");

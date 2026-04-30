@@ -23,6 +23,9 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public List<BookEntity> findBooksByYearRange(int minYear, int maxYear) {
+        if (minYear > maxYear) {
+            throw new IllegalArgumentException("Min year is greater than Max year");
+        }
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<BookEntity> cq = cb.createQuery(BookEntity.class);
         Root<BookEntity> root = cq.from(BookEntity.class);

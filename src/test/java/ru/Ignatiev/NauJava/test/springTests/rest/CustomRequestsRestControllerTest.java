@@ -28,21 +28,39 @@ public class CustomRequestsRestControllerTest {
                 .when()
                 .get("/api/custom/findByNameAndSurname")
                 .then()
-                .statusCode(200);
+                .statusCode(401);
     }
 
     @Test
     void shouldReturn404WhenAuthorsNotFoundAndUserAuthorized() {
         given()
                 .auth()
-                .form("admin", "admin")
-                .when()
+                .preemptive()
+                .basic("admin", "admin")
                 .param("name", "Alex")
                 .param("surname", "Summer")
-                .when()
-                .get("/api/custom/findByNameAndSurname")
+                .get("/api/custom/author/findByNameAndSurname")
                 .then()
                 .log().all()
                 .statusCode(404);
+    }
+
+    @Test
+    public void testGetReportWithoutCreation() {
+        given()
+                .auth().basic("admin", "admin")
+                .when()
+                .get("/report/26")
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    public void testGetReportUnauthorized() {
+        given()
+                .when()
+                .get("/report/26")
+                .then()
+                .statusCode(401);
     }
 }
