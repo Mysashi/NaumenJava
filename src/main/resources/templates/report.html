@@ -52,8 +52,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${userList}">
-        <td th:text="${user.username}">Имя</td>
+    <tr th:each="userName : ${userList}">
+        <td th:text="${userName}">Имя пользователя</td>
     </tr>
     <tr th:if="${#lists.isEmpty(userList)}">
         <td style="text-align: center;">Пользователи не найдены</td>

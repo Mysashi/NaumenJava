@@ -1,15 +1,11 @@
 package ru.Ignatiev.NauJava.domain.service;
 
 
-import org.thymeleaf.context.Context;
-
-import java.util.concurrent.CompletableFuture;
+import ru.Ignatiev.NauJava.domain.entity.ReportEntity;
 
 public interface ReportService {
 
-    String getReportContext(Long id);
+    ReportEntity getReport(Long id);
 
-    String createReport(String reportContext);
-
-    CompletableFuture<Context> createAsyncAndFormContext();
+    Long createAsyncReport();
 }
