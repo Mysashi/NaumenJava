@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity registerUser(String username, String password) {
-        if (!userRepository.findByUsername(username).isEmpty()) throw new RuntimeException("User Duplicate found");
+        if (userRepository.findByUsername(username).isPresent()) throw new RuntimeException("User Duplicate found");
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
