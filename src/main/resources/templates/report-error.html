@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Статус отчета</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f8f9fa; }
+        .error-container { text-align: center; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px; }
+        h1 { color: #dc3545; font-size: 24px; margin-bottom: 20px; }
+        p { color: #6c757d; line-height: 1.5; margin-bottom: 30px; }
+        .btn { text-decoration: none; background-color: #007bff; color: white; padding: 10px 20px; border-radius: 4px; transition: background 0.2s; }
+        .btn:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="error-container">
+    <h1>Отчет недоступен</h1>
+    <p>
+        На данный момент отчет не может быть отображен.
+        Возможно, он еще <strong>формируется</strong> или в процессе обработки
+        произошла <strong>ошибка</strong>.
+    </p>
+    <a href="javascript:history.back()" class="btn">Вернуться назад</a>
+</div>
+
+</body>
+</html>

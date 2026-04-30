@@ -19,12 +19,19 @@ public class ReportController {
     @PostMapping("/report/async")
     @ResponseBody
     public String createReport() {
-        return "Report was created with id " + reportService.createAsyncReport();
+        var reportId = reportService.createAsyncReport();
+        if (reportId == null) {
+            return "Report was not formed succesfully" + reportId;
+        }
+        return "Report was formed with id " + reportId;
     }
 
     @GetMapping("/report/{id}")
     public String returnReport(@PathVariable Long id, Model model) {
         var reportEntity = reportService.getReport(id);
+        if (reportEntity == null) {
+            return "report-error";
+        }
         model.addAttribute("userCount", reportEntity.getUserCount());
         model.addAttribute("userCountDuration", reportEntity.getUserCountDuration());
         model.addAttribute("totalTime", reportEntity.getTotalTime());

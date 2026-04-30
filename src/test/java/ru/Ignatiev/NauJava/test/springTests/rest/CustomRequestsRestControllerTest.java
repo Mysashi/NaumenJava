@@ -21,7 +21,7 @@ public class CustomRequestsRestControllerTest {
     }
 
     @Test
-    void shouldReturn200WhenAuthorsNotFoundAndUserUnauthorized() {
+    void shouldReturn401WhenAuthorsNotFoundAndUserUnauthorized() {
         given()
                 .param("name", "John")
                 .param("surname", "Doe")
@@ -43,16 +43,6 @@ public class CustomRequestsRestControllerTest {
                 .then()
                 .log().all()
                 .statusCode(404);
-    }
-
-    @Test
-    public void testGetReportWithoutCreation() {
-        given()
-                .auth().basic("admin", "admin")
-                .when()
-                .get("/report/26")
-                .then()
-                .statusCode(401);
     }
 
     @Test

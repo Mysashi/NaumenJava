@@ -69,7 +69,6 @@ public class UserServiceTest {
                 IllegalArgumentException.class,
                 () -> userService.registerUser(null, "admin")
         );
-
         verify(userRepository, never()).save(any());
     }
 }

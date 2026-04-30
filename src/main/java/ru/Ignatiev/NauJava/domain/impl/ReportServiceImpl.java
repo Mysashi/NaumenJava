@@ -1,10 +1,8 @@
 package ru.Ignatiev.NauJava.domain.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 import ru.Ignatiev.NauJava.domain.entity.ReportEntity;
 import ru.Ignatiev.NauJava.domain.entity.ReportStatus;
 import ru.Ignatiev.NauJava.domain.entity.UserEntity;
@@ -12,12 +10,9 @@ import ru.Ignatiev.NauJava.domain.repo.ReportRepository;
 import ru.Ignatiev.NauJava.domain.repo.UserRepository;
 import ru.Ignatiev.NauJava.domain.service.ReportService;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,11 +21,13 @@ public class ReportServiceImpl implements ReportService {
     private static final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final Executor reportTaskExecutor;
 
 
-    ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository) {
+    ReportServiceImpl(ReportRepository reportRepository, UserRepository userRepository, Executor reportTaskExecutor) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
+        this.reportTaskExecutor = reportTaskExecutor;
     }
 
     @Override
@@ -53,62 +50,58 @@ public class ReportServiceImpl implements ReportService {
     public Long createAsyncReport() {
         ReportEntity reportPlaceholder = new ReportEntity();
         reportPlaceholder.setReportStatus(ReportStatus.CREATED);
-        reportPlaceholder = reportRepository.save(reportPlaceholder);
-        Long reportId = reportPlaceholder.getId();
-
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                long startTime = System.currentTimeMillis();
-
-                AtomicLong userCount = new AtomicLong();
-                AtomicReference<List<UserEntity>> userList = new AtomicReference<>();
-                AtomicLong userCountDuration = new AtomicLong();
-                AtomicLong userListDuration = new AtomicLong();
-
-                Thread userCountThread = new Thread(() -> {
-                    userCount.set(userRepository.count());
-                    userCountDuration.set(System.currentTimeMillis() - startTime);
-                });
-
-                Thread userListThread = new Thread(() -> {
-                    userList.set(userRepository.findAll());
-                    userListDuration.set(System.currentTimeMillis() - startTime);
-                });
-
-                userCountThread.start();
-                userListThread.start();
-                userCountThread.join();
-                userListThread.join();
-
-                long totalTime = System.currentTimeMillis() - startTime;
-
-                reportRepository.findById(reportId).ifPresent(report -> {
-                    report.setUserCount(userCount.get()); // Извлекаем long из AtomicLong
-                    report.setTotalTime(totalTime);
-                    report.setUserCountDuration(userCountDuration.get());
-                    report.setUserListDuration(userListDuration.get());
-
-                    List<String> names = userList.get().stream()
-                            .map(UserEntity::getUsername)
-                            .collect(Collectors.toList());
-                    report.setUserListNames(names);
-
-                    report.setReportStatus(ReportStatus.FINISHED);
-                    reportRepository.save(report);
-                });
-
-                log.info("Report {} formed for {} ms.", reportId, totalTime);
-
-            } catch (Exception e) {
-                log.error("Error when forming Report {}: {}", reportId, e.getMessage());
-                reportRepository.findById(reportId).ifPresent(report -> {
-                    report.setReportStatus(ReportStatus.ERROR);
-                    reportRepository.save(report);
-                });
-            }
-        });
+        ReportEntity savedReport = reportRepository.save(reportPlaceholder);
+        Long reportId = savedReport.getId();
+        CompletableFuture.runAsync(() -> processReport(reportId), reportTaskExecutor);
 
         return reportId;
+    }
+
+    private void processReport(Long reportId) {
+        try {
+            long globalStart = System.currentTimeMillis();
+
+            CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() -> {
+                long count = userRepository.count();
+                return count;
+            }, reportTaskExecutor);
+
+            CompletableFuture<List<UserEntity>> listFuture = CompletableFuture.supplyAsync(
+                    userRepository::findAll, reportTaskExecutor);
+
+            long countStart = System.currentTimeMillis();
+            Long count = countFuture.join();
+            long countDuration = System.currentTimeMillis() - countStart;
+
+            long listStart = System.currentTimeMillis();
+            List<UserEntity> users = listFuture.join();
+            long listDuration = System.currentTimeMillis() - listStart;
+
+            long totalTime = System.currentTimeMillis() - globalStart;
+
+            reportRepository.findById(reportId).ifPresent(report -> {
+                report.setUserCount(count);
+                report.setUserCountDuration(countDuration);
+                report.setUserListDuration(listDuration);
+                report.setTotalTime(totalTime);
+                report.setUserListNames(users.stream()
+                        .map(UserEntity::getUsername)
+                        .collect(Collectors.toList()));
+                report.setReportStatus(ReportStatus.FINISHED);
+                reportRepository.save(report);
+            });
+
+        } catch (Exception e) {
+            log.error("Error forming report {}", reportId, e);
+            updateReportError(reportId);
+        }
+
+    }
+
+    private void updateReportError(Long id) {
+        reportRepository.findById(id).ifPresent(report -> {
+            report.setReportStatus(ReportStatus.ERROR);
+            reportRepository.save(report);
+        });
     }
 }
