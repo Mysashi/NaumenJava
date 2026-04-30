@@ -1,4 +1,4 @@
-package ru.Ignatiev.NauJava.test;
+package ru.Ignatiev.NauJava.test.springTests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

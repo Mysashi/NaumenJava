@@ -28,7 +28,7 @@ public class CustomRequestsRestController {
     }
 
     @GetMapping("/author/findByNameAndSurname")
-    private List<AuthorEntity> findAuthorsByNameAndSurname(@RequestParam String name, @RequestParam String surname) {
+    public List<AuthorEntity> findAuthorsByNameAndSurname(@RequestParam String name, @RequestParam String surname) {
         var found = authorRepositoryCustom.findByNameAndSurnameAllIgnoreCase(name, surname);
         if (found.isEmpty()) throw new ResourceNotFoundException();
         log.info("List of book by name and surname was found! size of List={}", found.size());
@@ -37,7 +37,7 @@ public class CustomRequestsRestController {
 
 
     @GetMapping("/book/findBookByYearRange")
-    private List<BookEntity> findBookByYearRange(@RequestParam int minYear, @RequestParam int maxYear) {
+    public List<BookEntity> findBookByYearRange(@RequestParam int minYear, @RequestParam int maxYear) {
         var found = bookRepositoryCustom.findBooksByYearRange(minYear, maxYear);
         if (found.isEmpty()) throw new ResourceNotFoundException();
         log.info("List of book by range of year was found! size of List={}", found.size());

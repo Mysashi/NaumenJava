@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.Ignatiev.NauJava.config.UserDetailsServiceImpl;
 import ru.Ignatiev.NauJava.domain.entity.Role;
 import ru.Ignatiev.NauJava.domain.entity.UserEntity;
 import ru.Ignatiev.NauJava.domain.repo.UserRepository;
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity registerUser(String username, String password) {
-        if (!userRepository.findByUsername(username).isEmpty()) throw new RuntimeException("User Duplicate found");
+        if (userRepository.findByUsername(username).isPresent()) throw new RuntimeException("User Duplicate found");
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));

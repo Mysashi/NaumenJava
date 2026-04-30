@@ -110,4 +110,9 @@ public class UserEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 }
