@@ -16,7 +16,6 @@ public class ExceptionControllerAdvice
     }
 
     @ExceptionHandler(java.lang.Exception.class)
-    @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException exception(java.lang.Exception e)
     {

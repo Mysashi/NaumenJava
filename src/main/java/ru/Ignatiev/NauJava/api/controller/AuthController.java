@@ -38,4 +38,7 @@ public class AuthController {
             return "register";
         }
     }
+
+    @GetMapping("/login")
+    public String loginUser() { return "login"; }
 }

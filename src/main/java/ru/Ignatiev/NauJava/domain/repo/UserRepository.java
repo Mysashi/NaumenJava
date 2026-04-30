@@ -8,7 +8,6 @@ import ru.Ignatiev.NauJava.domain.entity.UserEntity;
 import java.util.Optional;
 
 @Component
-@RepositoryRestResource(path = "user")
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
 }

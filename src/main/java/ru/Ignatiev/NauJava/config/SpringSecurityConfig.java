@@ -15,23 +15,22 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurityConfig
 {
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/registration").permitAll()
+                        auth.requestMatchers("/registration", "/login", "/logout").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                                 .hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated())
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
-                .logout(logout -> logout
+                .logout((logout) -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .permitAll()
-                );
+                        .logoutSuccessUrl("/login")
+                        .permitAll());
 
         return http.build();
     }

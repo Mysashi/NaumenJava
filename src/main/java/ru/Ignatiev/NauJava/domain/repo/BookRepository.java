@@ -13,10 +13,10 @@ import java.util.List;
 
 
 @Component
-@RepositoryRestResource(path = "book")
+@RepositoryRestResource(path = "booK")
 public interface BookRepository extends CrudRepository<BookEntity, Long> {
 
-    @Query("SELECT b FROM BookEntity b WHERE b.yearOfCreation BETWEEN :minYear AND :maxYear")
+    @Query("SELECT b FROM BookEntity b WHERE b.publicationYear BETWEEN :minYear AND :maxYear")
     List<BookEntity> findBooksByYearRange(@Param("minYear") int minYear,
                                           @Param("maxYear") int maxYear);
 
