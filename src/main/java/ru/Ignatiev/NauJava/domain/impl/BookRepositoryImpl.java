@@ -42,4 +42,6 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
         return entityManager.createQuery(cq).getResultList();
     }
+
+
 }

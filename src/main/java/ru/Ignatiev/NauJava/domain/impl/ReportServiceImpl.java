@@ -1,5 +1,6 @@
 package ru.Ignatiev.NauJava.domain.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,9 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportEntity getReport(Long id) {
         var report = reportRepository.findById(id);
+        if (report.isEmpty()) {
+            throw new EntityNotFoundException("Report with id " + id + " not found");
+        }
         if (report.get().getReportStatus() == ReportStatus.FINISHED) {
             log.info("REPORT with id ={} was sent TO HTML Report", id);
             return report.get();

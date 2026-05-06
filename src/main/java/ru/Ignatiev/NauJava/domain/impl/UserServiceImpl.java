@@ -1,5 +1,6 @@
 package ru.Ignatiev.NauJava.domain.impl;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,24 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                    PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.encoder = encoder;
+    }
+
+
+    @PostConstruct
+    public void init() {
+        UserEntity admin = new UserEntity();
+        admin.setUsername("admin");
+        admin.setPassword(encoder.encode("admin"));
+        admin.addRoles(Role.ADMIN);
+        userRepository.save(admin);
     }
 
     @Override

@@ -31,11 +31,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private void setExampleUsers(PasswordEncoder passwordEncoder) {
-        UserEntity admin = new UserEntity();
-        admin.setUsername("admin");
-        admin.setPassword(passwordEncoder.encode("admin"));
-        admin.addRoles(Role.ADMIN);
-        userRepository.save(admin);
 
         UserEntity user = new UserEntity();
         user.setUsername("user");

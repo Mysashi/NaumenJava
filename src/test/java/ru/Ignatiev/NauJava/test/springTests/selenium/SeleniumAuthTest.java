@@ -5,15 +5,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SeleniumAuthTest {
 
+    private static final Logger log = LoggerFactory.getLogger(SeleniumAuthTest.class);
     @Autowired
     private WebDriver driver;
 
@@ -35,16 +40,19 @@ public class SeleniumAuthTest {
         var passwordField = By.name("password");
         var loginButton = By.cssSelector("button[type='submit']");
 
-        driver.findElement(usernameField).sendKeys("admin");
-        driver.findElement(passwordField).sendKeys("admin");
+        driver.findElement(usernameField).sendKeys("user");
+        driver.findElement(passwordField).sendKeys("user");
         driver.findElement(loginButton).click();
-
+        log.info("Current driver url: {}", driver.getCurrentUrl());
         WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(3));
-        wait.until(ExpectedConditions.urlContains("/"));
+        wait.until(ExpectedConditions.urlToBe(baseUrl + "/"));
 
         Assertions.assertEquals(baseUrl + "/", driver.getCurrentUrl());
 
-        driver.get(baseUrl + "/logout");
+        WebElement logoutButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[contains(normalize-space(), 'Выйти')]")
+        ));
+        logoutButton.click();
         Assertions.assertEquals(baseUrl + "/login", driver.getCurrentUrl());
     }
 }
